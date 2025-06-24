@@ -151,7 +151,7 @@ class Score:
         self.img = self.fonto.render("Score: 0", 0, self.color)
 
     def update(self, screen: pg.Surface):
-        self.img = self.fonto.render(f"Score: {self.score}", 0, self.color)
+        self.img = self.fonto.render(f"スコア: {self.score}", 0, self.color)
         screen.blit(self.img, (100, HEIGHT - 50))  # 左下表示
 
     def add(self, points: int):
