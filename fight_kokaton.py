@@ -213,7 +213,7 @@ def main():
 
         # リストのクリーンアップ
         bombs = [b for b in bombs if b is not None]
-        beams = [b for b in beams if b is not None and check_bound(b.rct)[0]]
+        beams = [b for b in beams if b is not None and check_bound(b.rct)[0]] #画面外に出たらビームが消える
         explosions = [ex for ex in explosions if ex.life > 0]
 
         key_lst = pg.key.get_pressed()
