@@ -140,6 +140,18 @@ class Bomb:
         self.rct.move_ip(self.vx, self.vy)
         screen.blit(self.img, self.rct)
 
+class Explosion:
+    def __init__(self, center: tuple[int, int]):
+        img0 = pg.image.load("fig/explosion.gif")
+        img1 = pg.transform.flip(img0, True, False)
+        self.imgs = [img0, img1]
+        self.rct = img0.get_rect(center=center)
+        self.life = 20
+
+    def update(self, screen: pg.Surface):
+        self.life -= 1
+        screen.blit(self.imgs[self.life // 10 % 2], self.rct)
+
 class Score:
     """
     スコア表示用クラス
@@ -166,6 +178,7 @@ def main():
     score = Score()
     bombs = [Bomb((255, 0, 0), 10) for _ in range(NUM_OF_BOMBS)]
     beams = []  # 複数ビーム用のリスト
+    explosions = []  # 爆発エフェクトのリスト
     clock = pg.time.Clock()
     tmr = 0
     
@@ -191,6 +204,7 @@ def main():
         for i, bomb in enumerate(bombs):
             for j, beam in enumerate(beams):
                 if beam is not None and beam.rct.colliderect(bomb.rct):
+                    explosions.append(Explosion(bomb.rct.center))
                     beams[j] = None  # 衝突したビームを削除予定に
                     bombs[i] = None  # 衝突した爆弾も削除予定に
                     bird.change_img(6, screen)
@@ -200,6 +214,7 @@ def main():
         # リストのクリーンアップ
         bombs = [b for b in bombs if b is not None]
         beams = [b for b in beams if b is not None and check_bound(b.rct)[0]]
+        explosions = [ex for ex in explosions if ex.life > 0]
 
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
@@ -207,6 +222,8 @@ def main():
             beam.update(screen)
         for bomb in bombs:
             bomb.update(screen)
+        for ex in explosions:
+            ex.update(screen)
         score.update(screen)
         pg.display.update()
         tmr += 1
